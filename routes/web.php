@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SoldierController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,4 +25,4 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/soldiers', [SoldierController::class, 'getSoldiers']);
+Route::get('soldiers', [SoldierController::class, 'index'])->name('soldiers.index');

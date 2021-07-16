@@ -4,11 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Soldier;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 
 class SoldierController extends Controller
 {
-    public function getSoldiers()
+    public function index(Request $request)
     {
-        return Soldier::get();
+        if ($request->ajax()) {
+            $data = Soldier::query();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('soldiers.index');
     }
 }
