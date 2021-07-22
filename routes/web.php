@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -25,4 +25,24 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('soldiers', [SoldierController::class, 'index'])->name('soldiers.index');
+Route::get('soldiers', [SoldierController::class, 'index'])->name('soldiers.index')
+    ->middleware('auth');
+
+Route::get('soldiers/create', [SoldierController::class, 'create'])->name('soldiers.create')
+    ->middleware('auth');
+
+Route::post('soldiers/store', [SoldierController::class, 'store'])->name('soldiers.store')
+    ->middleware('auth');
+
+Route::get('soldiers/show/{id}', [SoldierController::class, 'show'])->name('soldiers.show')
+    ->middleware('auth');
+
+Route::get('soldiers/edit/{id}', [SoldierController::class, 'edit'])->name('soldiers.edit')
+    ->middleware('auth');
+
+Route::post('soldiers/update/{id}',  [SoldierController::class, 'update'])->name('soldiers.update')
+    ->middleware('auth');
+
+Route::delete('soldiers/{id}',  [SoldierController::class, 'destroy'])->name('soldiers.destroy')
+    ->middleware('auth');
+
