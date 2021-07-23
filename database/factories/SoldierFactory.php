@@ -4,6 +4,7 @@
 namespace Database\Factories;
 
 
+use App\Models\Rank;
 use App\Models\Soldier;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Psy\Util\Str;
@@ -31,6 +32,7 @@ class SoldierFactory extends Factory
             'phone_number' => $this->faker->phoneNumber(),
             'email' => $this->faker->unique()->safeEmail(),
             'salary' => $this->faker->numberBetween(1000, 5000),
+            'rank_id' => Rank::all()->random()->id,
         ];
     }
 

@@ -19,7 +19,7 @@
             <div>
                 <x-label for="photo" :value="__('Photo')" />
 
-                <x-input id="photo" class="block mt-1 w-full" type="file" name="file" required autofocus />
+                <x-input id="photo" class="block mt-1 w-full" type="file" name="photo" enctype="multipart/form-data" required autofocus />
             </div>
             <br>
 
@@ -64,6 +64,18 @@
                 <x-label for="salary" :value="__('Salary')" />
 
                 <x-input id="salary" class="block mt-1 w-full" type="text" name="salary" :value="old('salary')" required autofocus />
+            </div>
+
+            <!-- Rank -->
+            <div>
+                <x-label for="rank" :value="__('Rank')" />
+
+                <x-select id="rank" class="block mt-1 w-full" name="rank" required autofocus>
+                    @foreach($ranks as $rank)
+                        <option value="{{$rank->id}}">{{$rank->rank}}</option>
+                    @endforeach
+                </x-select>
+
             </div>
 
             <div class="flex items-center justify-end mt-4">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rank;
 use App\Models\Soldier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -28,7 +29,7 @@ class SoldierController extends Controller
 
     public function create()
     {
-        return View::make('soldiers.create');
+        return View::make('soldiers.create')->with('ranks', Rank::get());
     }
 
     public function store(Request $request)
@@ -40,6 +41,7 @@ class SoldierController extends Controller
             'date_of_entry' => $request->date_of_entry,
             'salary' => $request->salary,
             'phone_number' => $request->phone_number,
+            'rank_id' => $request->rank,
         ]);
 
         return redirect()->route('soldiers.index')

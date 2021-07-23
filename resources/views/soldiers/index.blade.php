@@ -27,6 +27,8 @@
 
                                 <th>Lastname</th>
 
+                                <th>Rank</th>
+
                                 <th>Email</th>
 
                                 <th>Phone</th>
@@ -76,6 +78,8 @@
                 {data: 'first_name', name: 'first_name'},
 
                 {data: 'last_name', name: 'last_name'},
+
+                {data: 'rank_id', name: 'rank_id'},
 
                 {data: 'email', name: 'email'},
 

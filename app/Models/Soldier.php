@@ -10,5 +10,10 @@ class Soldier extends Model
     use HasFactory;
     protected $table = 'soldiers';
 
-    protected $fillable = ['first_name', 'last_name', 'date_of_entry', 'phone_number', 'email', 'salary'];
+    protected $fillable = ['first_name', 'last_name', 'date_of_entry', 'phone_number', 'email', 'salary', 'rank_id'];
+
+    public function rank()
+    {
+        return $this->belongsTo('Rank');
+    }
 }
