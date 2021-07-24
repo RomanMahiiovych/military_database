@@ -46,3 +46,5 @@ Route::post('soldiers/update/{id}',  [SoldierController::class, 'update'])->name
 Route::delete('soldiers/{id}',  [SoldierController::class, 'destroy'])->name('soldiers.destroy')
     ->middleware('auth');
 
+Route::get('heads/{rankId}',  [SoldierController::class, 'heads'])
+    ->middleware('auth');

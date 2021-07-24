@@ -71,11 +71,19 @@
                 <x-label for="rank" :value="__('Rank')" />
 
                 <x-select id="rank" class="block mt-1 w-full" name="rank" required autofocus>
+                    <option value="0" disabled selected>Choose the rank</option>
                     @foreach($ranks as $rank)
-                        <option value="{{$rank->id}}">{{$rank->rank}}</option>
+                        <option value="{{$rank->id}}">{{ucfirst($rank->rank)}}</option>
                     @endforeach
                 </x-select>
+            </div>
 
+            <!-- Head -->
+            <div>
+                <x-label for="head" :value="__('Head')" />
+
+                <x-select id="head" class="block mt-1 w-full" name="head" required autofocus>
+                </x-select>
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -86,3 +94,26 @@
         </form>
     </x-auth-card>
 </x-guest-layout>
+
+<script>
+    $(document).ready(function () {
+    $('#rank').on('change', function () {
+        let rank_id = $(this).val();
+        $('#head').empty();
+        $('#head').append(`<option value="0" disabled selected>Processing...</option>`);
+        $.ajax({
+            type: 'GET',
+            url: '/heads/' + rank_id,
+            dataType: 'json',
+            success: function (response) {
+                var response = JSON.parse(JSON.stringify(response));
+                $('#head').empty();
+                $('#head').append(`<option value="0" disabled selected>Choose the Head</option>`);
+                response.forEach(element => {
+                    $('#head').append(`<option value="${element['id']}">${element['first_name']}</option>`);
+                });
+            }
+        });
+    });
+    });
+</script>

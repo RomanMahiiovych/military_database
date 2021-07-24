@@ -33,6 +33,9 @@
             </main>
         </div>
 
+        {{--    JQuery    --}}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
         {{--    Datatables libraries    --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
 

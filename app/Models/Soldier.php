@@ -16,4 +16,15 @@ class Soldier extends Model
     {
         return $this->belongsTo('Rank');
     }
+
+    public function soldierLevel()
+    {
+        return $this->hasMany('SoldierHierarchy', 'soldier_id', 'id');
+//        return $this->hasMany('SoldierHierarchy', 'id', 'soldier_id');
+    }
+
+    public function headLevel()
+    {
+        return $this->hasMany('SoldierHierarchy', 'id', 'head_id');
+    }
 }

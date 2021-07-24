@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rank;
 use App\Models\Soldier;
+use App\Models\SoldierHierarchy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Yajra\Datatables\Datatables;
@@ -29,12 +30,14 @@ class SoldierController extends Controller
 
     public function create()
     {
-        return View::make('soldiers.create')->with('ranks', Rank::get());
+        return View::make('soldiers.create')
+            ->with('ranks', Rank::where('id', '!=',  1)->get())
+            ->with('soldiers', Soldier::get());
     }
 
     public function store(Request $request)
     {
-        Soldier::create([
+        $soldier = Soldier::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
@@ -43,6 +46,14 @@ class SoldierController extends Controller
             'phone_number' => $request->phone_number,
             'rank_id' => $request->rank,
         ]);
+
+        if (!empty($soldier)) {
+            SoldierHierarchy::create([
+                'soldier_id' => $soldier->id,
+                'level' => $soldier->rank_id,
+                'head_id' => $request->head,
+            ]);
+        }
 
         return redirect()->route('soldiers.index')
             ->with('success', 'Soldier\'s record created successfully.');
@@ -87,5 +98,10 @@ class SoldierController extends Controller
 
         return redirect()->route('soldiers.index')
             ->with('success', 'Successfully deleted the soldier!');
+    }
+
+    public function heads($rankId)
+    {
+        return response()->json(Soldier::where('rank_id', --$rankId)->get());
     }
 }
