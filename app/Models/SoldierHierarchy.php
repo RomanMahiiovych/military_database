@@ -17,11 +17,11 @@ class SoldierHierarchy extends Model
 
     public function soldier()
     {
-        return $this->belongsTo('Soldier', 'soldier_id', 'id');
+        return $this->belongsTo(Soldier::class, 'soldier_id', 'id');
     }
 
     public function head()
     {
-        return $this->belongsTo('Soldier', 'head_id', 'id');
+        return $this->belongsTo(Soldier::class, 'head_id', 'id');
     }
 }

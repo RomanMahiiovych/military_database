@@ -6,7 +6,7 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('soldiers.store') }}">
+        <form method="post" action="{{ route('soldiers.store') }}" enctype="multipart/form-data">
         @csrf
 
             <x-slot name="logo">
@@ -19,7 +19,7 @@
             <div>
                 <x-label for="photo" :value="__('Photo')" />
 
-                <x-input id="photo" class="block mt-1 w-full" type="file" name="photo" enctype="multipart/form-data" required autofocus />
+                <x-input type="file" name="photo" class="block mt-1 w-full" required autofocus />
             </div>
             <br>
 

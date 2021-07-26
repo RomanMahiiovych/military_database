@@ -12,7 +12,7 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('soldiers.index') }}">
+        <form method="GET" action="{{ route('soldiers.index') }}">
         @csrf
 
         <!-- First name -->

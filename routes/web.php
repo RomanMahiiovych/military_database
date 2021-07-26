@@ -3,6 +3,7 @@
 use App\Http\Controllers\SoldierController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Intervention\Image\Facades\Image;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,7 @@ Route::get('soldiers/edit/{id}', [SoldierController::class, 'edit'])->name('sold
 Route::post('soldiers/update/{id}',  [SoldierController::class, 'update'])->name('soldiers.update')
     ->middleware('auth');
 
-Route::delete('soldiers/{id}',  [SoldierController::class, 'destroy'])->name('soldiers.destroy')
+Route::delete('soldiers/destroy/{id}',  [SoldierController::class, 'destroy'])->name('soldiers.destroy')
     ->middleware('auth');
 
 Route::get('heads/{rankId}',  [SoldierController::class, 'heads'])

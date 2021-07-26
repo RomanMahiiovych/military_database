@@ -15,7 +15,14 @@
 
                     <div class="container">
 
-                        <table class="table table-bordered data-table">
+                        {{--             Add Button           --}}
+                        <div align="right">
+                            <a href="{{ route('soldiers.create') }}" class="btn btn-success btn-sm">Add Soldier</a>
+                        </div>
+
+                        <br />
+
+                        <table id="data-table" class="table table-bordered data-table">
 
                             <thead>
 
@@ -33,13 +40,13 @@
 
                                 <th>Phone</th>
 
-                                <th>Date of Entry</th>
+{{--                                <th>Date of Entry</th>--}}
 
-                                <th>Salary</th>
+{{--                                <th>Salary</th>--}}
 
                                 <th>Image</th>
 
-                                <th width="100px">Action</th>
+                                <th width="100px">Actions</th>
 
                             </tr>
 
@@ -59,11 +66,61 @@
     </div>
 </x-app-layout>
 
+{{--DELETE MODAL--}}
+<div id="confirmModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 align="center" style="margin:0;">Are you sure you want to remove this soldier?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    var soldier_id;
+
+    $(document).on('click', '.delete', function() {
+        soldier_id = $(this).attr('id');
+        $('#confirmModal').modal('show');
+    });
+
+    $('#ok_button').click( function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax(
+            {
+                url: "soldiers/destroy/" + soldier_id,
+                type: 'delete',
+                data: {
+                    "id": soldier_id
+                },
+                beforeSend:function() {
+                    $('#ok_button').text('Deleting...');
+                },
+                success:function(response)
+                {
+                    setTimeout(function() {
+                        $('#confirmModal').modal('hide');
+                        $('#data-table').DataTable().ajax.reload();
+                        $('#ok_button').text('Delete');
+                    }, 1000);
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+    });
 
     $(function () {
-
-        var table = $('.data-table').DataTable({
+        $('.data-table').DataTable({
 
             processing: true,
 
@@ -85,16 +142,15 @@
 
                 {data: 'phone_number', name: 'phone_number'},
 
-                {data: 'date_of_entry', name: 'date_of_entry'},
+                // {data: 'date_of_entry', name: 'date_of_entry'},
 
-                {data: 'salary', name: 'salary'},
+                // {data: 'salary', name: 'salary'},
 
-                {data: 'image', name: 'image'},
+                {data: 'image', name: 'image', orderable: false, searchable: false},
 
                 {data: 'action', name: 'action', orderable: false, searchable: false},
 
-            ]
-
+            ],
         });
 
     });

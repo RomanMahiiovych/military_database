@@ -15,6 +15,6 @@ class Rank extends Model
 
     public function rank()
     {
-        return $this->hasOne('Soldier');
+        return $this->hasOne(Soldier::class);
     }
 }
