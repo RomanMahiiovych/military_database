@@ -5,14 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Rank;
 use App\Models\Soldier;
 use App\Models\SoldierHierarchy;
+use App\Services\SoldierService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Intervention\Image\Facades\Image;
-use PHPUnit\Exception;
 use Yajra\Datatables\Datatables;
 
 class SoldierController extends Controller
 {
+    protected $soldierService;
+
+    public function __construct(SoldierService $soldierService)
+    {
+        $this->soldierService = $soldierService;
+    }
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -116,20 +123,7 @@ class SoldierController extends Controller
 
     public function destroy($id)
     {
-        $soldier = Soldier::find($id);
-
-        try {
-            $level = $soldier->soldierLevel()->first();
-        } catch (Exception $e) {
-            return response()->json([
-                'errors' => 'The soldier was not deleted successfully!'
-            ]);
-        }
-
-        if ($level) {
-            $level->delete();
-        }
-        $soldier->delete();
+        $this->soldierService->handleDeletingSoldier($id);
 
         return response()->json([
             'message' => 'Data deleted successfully!'

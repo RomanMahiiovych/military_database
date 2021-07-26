@@ -20,11 +20,10 @@ class Soldier extends Model
     public function soldierLevel()
     {
         return $this->hasMany(SoldierHierarchy::class, 'soldier_id', 'id');
-//        return $this->hasMany('SoldierHierarchy', 'id', 'soldier_id');
     }
 
     public function headLevel()
     {
-        return $this->hasMany(SoldierHierarchy::class, 'id', 'head_id');
+        return $this->hasMany(SoldierHierarchy::class, 'head_id', 'id');
     }
 }
