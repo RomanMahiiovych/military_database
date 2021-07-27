@@ -36,11 +36,11 @@
 
                                 <th>Rank</th>
 
-                                <th>Email</th>
+{{--                                <th>Email</th>--}}
 
                                 <th>Phone</th>
 
-{{--                                <th>Date of Entry</th>--}}
+                                <th>Date of Entry</th>
 
 {{--                                <th>Salary</th>--}}
 
@@ -138,11 +138,11 @@
 
                 {data: 'rank_id', name: 'rank_id'},
 
-                {data: 'email', name: 'email'},
+                // {data: 'email', name: 'email'},
 
                 {data: 'phone_number', name: 'phone_number'},
 
-                // {data: 'date_of_entry', name: 'date_of_entry'},
+                {data: 'date_of_entry', name: 'date_of_entry'},
 
                 // {data: 'salary', name: 'salary'},
 

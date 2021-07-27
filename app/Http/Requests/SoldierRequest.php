@@ -26,9 +26,9 @@ class SoldierRequest extends FormRequest
         return [
             'first_name' => 'required|min:2|max:255',
             'last_name' => 'required|min:2|max:255',
-            'date_of_entry' => 'required|date_format:d.m.Y',
+            'date_of_entry' => 'required|date_format:Y-m-d',
             'email' => 'required|string|email|max:255|unique:soldiers',
-            'phone_number' => ['required', 'regex:/(380)[0-9]{9}/'],
+            'phone_number' => ['required', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'max:19'],
             'salary' => 'required|min:0|max:500000',
         ];
     }

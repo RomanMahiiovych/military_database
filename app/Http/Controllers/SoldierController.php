@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SoldierRequest;
 use App\Models\Rank;
 use App\Models\Soldier;
 use App\Models\SoldierHierarchy;
@@ -53,7 +54,7 @@ class SoldierController extends Controller
             ->with('soldiers', Soldier::get());
     }
 
-    public function store(Request $request)
+    public function store(SoldierRequest $request)
     {
         $file = $request->file('photo');
         $originFilename = time(). '_'. $file->getClientOriginalName();
