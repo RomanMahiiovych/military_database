@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Models\Soldier;
+use App\Models\SoldierHierarchy;
+use Intervention\Image\Facades\Image;
+use Yajra\DataTables\DataTables;
 
 class SoldierService
 {
@@ -66,5 +69,97 @@ class SoldierService
                 'level' => $subordinateSoldiersLevel,
             ]);
         }
+    }
+
+    public function handleStoringSoldier($request)
+    {
+        $imagesPath = $this->getSavedImagesPath($request->file('photo'));
+        $result = [];
+
+        $soldier = Soldier::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'date_of_entry' => $request->date_of_entry,
+            'salary' => $request->salary,
+            'phone_number' => $request->phone_number,
+            'rank_id' => $request->rank,
+            'image' =>  $imagesPath['imagePath'],
+            'small_image' =>  $imagesPath['smallImagePath'],
+        ]);
+
+        if (!empty($soldier)) {
+            $result = SoldierHierarchy::create([
+                'soldier_id' => $soldier->id,
+                'level' => $soldier->rank_id,
+                'head_id' => $request->head,
+            ]);
+        }
+
+        if (!$result) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getSavedImagesPath($file)
+    {
+        $originFilename = time(). '_'. $file->getClientOriginalName();
+        $smallFilename = time(). '_'. 'small_'. $file->getClientOriginalName();
+
+        $image = Image::make($file);
+        $smallImage = Image::make($file)->resize(70,70);
+        $image->save('storage/' . $originFilename);
+        $smallImage->save('storage/' . $smallFilename);
+
+        $imagePath =  'storage/' . $image->basename;
+        $smallImagePath =  'storage/' . $smallImage->basename;
+
+        return [
+            'imagePath' => $imagePath,
+            'smallImagePath' => $smallImagePath,
+        ];
+    }
+
+    public function getSoldiers()
+    {
+        $soldiers = Soldier::query();
+
+        return Datatables::of($soldiers)
+            ->addColumn('action', function ($soldier) {
+                $button = '<a href="soldiers/edit/' . $soldier->id.'" class="edit btn btn-primary btn-sm" id="editButton">Edit</a>';
+                $button .= '&nbsp;&nbsp;&nbsp;<button type="button" name="edit" id="'.$soldier->id.'" class="delete btn btn-danger btn-sm">Delete</button>';
+                return $button;
+            })
+            ->addColumn('image', function ($soldier) {
+                $url = asset($soldier->small_image);
+                $anonymousImageUrl = asset('storage/' . 'anonymous_user.png');
+                $image = (!empty($soldier->small_image))
+                    ? '<img src=" '.$url.' " border="0" class="img-rounded" align="center" />'
+                    : '<img src=" '.$anonymousImageUrl.' " border="0" width="80" class="img-rounded" align="center" />';
+                return $image;
+            })
+            ->rawColumns(['image', 'action'])
+            ->toJson();
+    }
+
+    public function updateSoldiers($request, $id) {
+        $soldier = Soldier::find($id);
+
+        $result = $soldier->update([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'date_of_entry' => $request->date_of_entry,
+            'salary' => $request->salary,
+            'phone_number' => $request->phone_number,
+        ]);
+
+        if (!$result) {
+            $result = false;
+        }
+
+        return $result;
     }
 }
