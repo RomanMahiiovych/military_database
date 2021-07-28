@@ -73,7 +73,9 @@ class SoldierService
 
     public function handleStoringSoldier($request)
     {
-        $imagesPath = $this->getSavedImagesPath($request->file('photo'));
+        if ($request->file('photo')) {
+            $imagesPath = $this->getSavedImagesPath($request->file('photo'));
+        }
         $result = [];
 
         $soldier = Soldier::create([
@@ -84,8 +86,8 @@ class SoldierService
             'salary' => $request->salary,
             'phone_number' => $request->phone_number,
             'rank_id' => $request->rank,
-            'image' =>  $imagesPath['imagePath'],
-            'small_image' =>  $imagesPath['smallImagePath'],
+            'image' => $imagesPath['imagePath'],
+            'small_image' => $imagesPath['smallImagePath'],
         ]);
 
         if (!empty($soldier)) {
@@ -145,6 +147,11 @@ class SoldierService
     }
 
     public function updateSoldiers($request, $id) {
+        $imagesPath = [];
+        if ($request->file('photo')) {
+            $imagesPath = $this->getSavedImagesPath($request->file('photo'));
+        }
+
         $soldier = Soldier::find($id);
 
         $result = $soldier->update([
@@ -154,7 +161,27 @@ class SoldierService
             'date_of_entry' => $request->date_of_entry,
             'salary' => $request->salary,
             'phone_number' => $request->phone_number,
+            'rank_id' => $request->rank,
         ]);
+
+        if ($imagesPath) {
+            $soldier->update([
+                'image' =>  $imagesPath['imagePath'],
+                'small_image' =>  $imagesPath['smallImagePath'],
+            ]);
+        }
+
+        if (($soldier->rank_id != $request->rank)
+            || $soldier->soldierLevel()->first()->head_id != $request->head) {
+            //todo add logic from DELETE
+            $soldier->soldierLevel()->delete();
+
+            $result = SoldierHierarchy::create([
+                'soldier_id' => $soldier->id,
+                'level' => $soldier->rank_id,
+                'head_id' => $request->head,
+            ]);
+        }
 
         if (!$result) {
             $result = false;

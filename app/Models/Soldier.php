@@ -14,7 +14,7 @@ class Soldier extends Model
 
     public function rank()
     {
-        return $this->belongsTo('Rank');
+        return $this->belongsTo(Rank::class);
     }
 
     public function soldierLevel()

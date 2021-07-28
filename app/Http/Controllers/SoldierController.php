@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SoldierRequest;
+use App\Http\Requests\SoldierUpdateRequest;
 use App\Models\Rank;
 use App\Models\Soldier;
 use App\Services\SoldierService;
@@ -58,12 +59,17 @@ class SoldierController extends Controller
     public function edit($id)
     {
         $soldier = Soldier::find($id);
+        $headId = $soldier->soldierLevel->first()->head_id;
+        $head = Soldier::find($headId);
 
         return view('soldiers.edit')
-            ->with('soldier', $soldier);
+            ->with('soldier', $soldier)
+            ->with('ranks', Rank::where('id', '!=',  1)->get())
+            ->with('head', $head)
+            ->with('soldiers', Soldier::get());
     }
 
-    public function update(Request $request, $id)
+    public function update(SoldierUpdateRequest $request, $id)
     {
         $result = $this->soldierService->updateSoldiers($request, $id);
 
