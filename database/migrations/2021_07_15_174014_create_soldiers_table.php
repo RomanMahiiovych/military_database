@@ -22,10 +22,7 @@ class CreateSoldiersTable extends Migration
             $table->string('email')->unique();
             $table->integer('salary');
             $table->string('image')->nullable();
-            $table->bigInteger('rank_id');
             $table->timestamps();
-
-            $table->foreign('rank_id')->references('id')->on('ranks');
         });
     }
 

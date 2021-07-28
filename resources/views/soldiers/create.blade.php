@@ -111,7 +111,7 @@
                     $('#head').empty();
                     $('#head').append(`<option value="0" disabled selected>Choose the Head</option>`);
                     response.forEach(element => {
-                        $('#head').append(`<option value="${element['id']}">${element['first_name']}</option>`);
+                        $('#head').append(`<option value="${element['id']}">${element['first_name']} ${element['last_name']}</option>`);
                     });
                 }
             });
