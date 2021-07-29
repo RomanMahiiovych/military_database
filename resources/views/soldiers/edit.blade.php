@@ -10,18 +10,15 @@
         @csrf
 
             <x-slot name="logo">
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+                <img src="{{ asset($soldier->image) }}" alt="">
             </x-slot>
 
             <!-- Photo -->
-            <div>
-                <x-label for="photo" :value="__('Photo')" />
+            <div class="mb-2 ml-0">
+                <x-label for="photo" :value="__('Image')" />
 
                 <x-input type="file" name="photo" class="block mt-1 w-full" autofocus />
             </div>
-            <br>
 
             <!-- First name -->
             <div>

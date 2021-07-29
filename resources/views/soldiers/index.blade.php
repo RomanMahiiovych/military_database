@@ -22,7 +22,7 @@
 
                         <br />
 
-                        <table id="data-table" class="table table-bordered data-table">
+                        <table id="data-table" class="table table-responsive data-table">
 
                             <thead>
 
@@ -36,13 +36,9 @@
 
                                 <th>Rank</th>
 
-{{--                                <th>Email</th>--}}
-
                                 <th>Phone</th>
 
                                 <th>Date of Entry</th>
-
-{{--                                <th>Salary</th>--}}
 
                                 <th>Image</th>
 
@@ -138,13 +134,9 @@
 
                 {data: 'rank_id', name: 'rank_id'},
 
-                // {data: 'email', name: 'email'},
-
                 {data: 'phone_number', name: 'phone_number'},
 
                 {data: 'date_of_entry', name: 'date_of_entry'},
-
-                // {data: 'salary', name: 'salary'},
 
                 {data: 'image', name: 'image', orderable: false, searchable: false},
 

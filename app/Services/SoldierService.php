@@ -110,7 +110,7 @@ class SoldierService
         $originFilename = time(). '_'. $file->getClientOriginalName();
         $smallFilename = time(). '_'. 'small_'. $file->getClientOriginalName();
 
-        $image = Image::make($file);
+        $image = Image::make($file)->resize(200,200);;
         $smallImage = Image::make($file)->resize(70,70);
         $image->save('storage/' . $originFilename);
         $smallImage->save('storage/' . $smallFilename);
@@ -134,6 +134,9 @@ class SoldierService
                 $button .= '&nbsp;&nbsp;&nbsp;<button type="button" name="edit" id="'.$soldier->id.'" class="delete btn btn-danger btn-sm">Delete</button>';
                 return $button;
             })
+            ->addColumn('rank_id', function ($soldier) {
+                return $soldier->rank->rank;
+            })
             ->addColumn('image', function ($soldier) {
                 $url = asset($soldier->small_image);
                 $anonymousImageUrl = asset('storage/' . 'anonymous_user.png');
@@ -154,6 +157,22 @@ class SoldierService
 
         $soldier = Soldier::find($id);
 
+        if (($soldier->rank_id != $request->rank)
+            || $soldier->soldierLevel()->first()->head_id != $request->head) {
+
+            //re-subordination
+            if($soldier->rank_id != $request->rank) {
+                $this->changeUpdatingSoldiersHierarchy($soldier);
+            }
+
+            //increase level of UPDATED SOLDIER
+            SoldierHierarchy::create([
+                'soldier_id' => $soldier->id,
+                'level' => $request->rank,
+                'head_id' => $request->head,
+            ]);
+        }
+
         $result = $soldier->update([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -171,22 +190,40 @@ class SoldierService
             ]);
         }
 
-        if (($soldier->rank_id != $request->rank)
-            || $soldier->soldierLevel()->first()->head_id != $request->head) {
-            //todo add logic from DELETE
-            $soldier->soldierLevel()->delete();
-
-            $result = SoldierHierarchy::create([
-                'soldier_id' => $soldier->id,
-                'level' => $soldier->rank_id,
-                'head_id' => $request->head,
-            ]);
-        }
-
         if (!$result) {
             $result = false;
         }
 
         return $result;
     }
+
+    public function changeUpdatingSoldiersHierarchy($updatedSoldier)
+    {
+        //find subordinates soldiers ID
+        $subordinateSoldiersId = $this->getSubordinatedSoldiersId($updatedSoldier);
+
+        if ($subordinateSoldiersId) {
+            //Updated soldier's level
+            $updatedSoldierLevel = $updatedSoldier->soldierLevel()->first()->level;
+            $subordinateSoldiersLevel = $updatedSoldierLevel + 1;
+
+            //new head - a soldier who joined the army the fastest
+            $newHead = Soldier::whereRaw("date_of_entry = (select min(`date_of_entry`) from soldiers where `rank_id` = $updatedSoldierLevel and `id` != $updatedSoldier->id)")->first();
+
+            //delete old head's dependencies
+            $updatedSoldier->headLevel()->delete();
+
+            //delete previous head of UPDATED SOLDIER
+            $updatedSoldier->soldierLevel()->delete();
+
+            // attach rest of soldiers to NEW HEAD
+            foreach ($subordinateSoldiersId as $subordinateSoldierId) {
+                $newHead->headLevel()->create([
+                    'soldier_id' => $subordinateSoldierId,
+                    'level' => $subordinateSoldiersLevel,
+                ]);
+            }
+        }
+    }
 }
+
