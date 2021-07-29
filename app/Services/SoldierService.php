@@ -139,10 +139,10 @@ class SoldierService
             })
             ->addColumn('image', function ($soldier) {
                 $url = asset($soldier->small_image);
-                $anonymousImageUrl = asset('storage/' . 'anonymous_user.png');
-                $image = (!empty($soldier->small_image))
+                $fakerURL = $soldier->small_image;
+                $image = ($soldier->type == 'storage')
                     ? '<img src=" '.$url.' " border="0" class="img-rounded" align="center" />'
-                    : '<img src=" '.$anonymousImageUrl.' " border="0" width="80" class="img-rounded" align="center" />';
+                    : '<img src=" '.$fakerURL.' " border="0" class="img-rounded" align="center" />';
                 return $image;
             })
             ->rawColumns(['image', 'action'])
